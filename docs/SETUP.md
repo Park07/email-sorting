@@ -59,7 +59,7 @@ raise SystemExit(classifier.main(['--engine', 'groq', '--allow-remote']))
 PY
 ```
 
-For the evaluator, replace the import of `classifier` with `evaluate` and the final call with `evaluate.main` in the same command. That is also **CHANGES SOMETHING**, with the same transmission, quota and undo effects. The 24-case run can encounter free-tier rate limits. It reports that failure rather than claiming a successful model benchmark.
+For evaluation, use [the single-command benchmark setup](BENCHMARK.md), which adds pacing, response timings and saved comparison reports. The 24-case run can still encounter free-tier rate limits. It reports that failure rather than claiming a successful model benchmark.
 
 If your existing process manager already provides the key and confirmation environment variables securely, use the following command.
 

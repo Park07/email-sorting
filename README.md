@@ -58,6 +58,8 @@ Labels are prefixed with `NXI/`. Several can apply to one email. An enquiry does
 
 ## Checks and evaluation
 
+For a hosted-versus-local comparison with a hidden key prompt, saved reports and response timings, follow [the benchmark commands](docs/BENCHMARK.md). No inbox connection is needed.
+
 **READ-ONLY.** Runs focused tests with mocked HTTP. Temporary test files are automatically cleaned. No live model, mailbox or paid API is contacted.
 
 ```sh

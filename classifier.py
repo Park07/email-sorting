@@ -7,6 +7,8 @@ from http.client import HTTPException
 import ipaddress
 import json
 import os
+import math
+import time
 from pathlib import Path
 import re
 import sys
@@ -360,10 +362,16 @@ def call_groq(email, allow_remote=False):
     return parse_groq_response(raw)
 
 
-def preview_batch(emails, ollama_url=None, *, model=MODEL, engine=None, allow_remote=False):
+def preview_batch(emails, ollama_url=None, *, model=MODEL, engine=None, allow_remote=False,
+                  telemetry=None, min_interval=0.0):
     engine = engine or ("ollama" if ollama_url is not None else "rules")
     if engine not in {"rules", "ollama", "groq"}:
         raise ValueError("Unknown engine")
+    if (isinstance(min_interval, bool) or not isinstance(min_interval, (int, float))
+            or not math.isfinite(min_interval) or not 0 <= min_interval <= 60):
+        raise ValueError("Request interval must be between zero and sixty seconds")
+    if telemetry is not None and not isinstance(telemetry, list):
+        raise ValueError("Telemetry must be a list")
     if engine != "ollama" and ollama_url is not None:
         raise ValueError("Ollama address is only valid with the Ollama engine")
     if engine == "ollama" and ollama_url is None:
@@ -375,6 +383,7 @@ def preview_batch(emails, ollama_url=None, *, model=MODEL, engine=None, allow_re
         validate_model_name(model)
     model_available = engine != "rules"
     model_checked = False
+    last_started = None
     results = []
     for email in emails:
         fallback = rule_preview(email)
@@ -384,21 +393,35 @@ def preview_batch(emails, ollama_url=None, *, model=MODEL, engine=None, allow_re
         if not model_available:
             results.append(replace(fallback, reason="Model paused after a connection failure; keyword preview only"))
             continue
+        started = None
+        attempt_status = "unavailable"
         try:
             if engine == "ollama":
                 if not model_checked:
                     inspect_local_model(ollama_url, model)
                     model_checked = True
+            if last_started is not None and min_interval:
+                remaining = min_interval - (time.monotonic() - last_started)
+                if remaining > 0:
+                    time.sleep(remaining)
+            started = last_started = time.monotonic()
+            if engine == "ollama":
                 categories, uncertain = call_model(email, ollama_url, model)
             else:
                 categories, uncertain = call_groq(email, allow_remote=allow_remote)
+            attempt_status = "success"
             results.append(suggestion(email, categories, "local-model" if engine == "ollama" else "hosted-model",
                                       "Model requested review" if uncertain else "Model suggestion; not yet evaluated on NXI mail"))
         except ModelUnavailable as error:
             model_available = False
             results.append(replace(fallback, reason=str(error)))
         except InvalidModelOutput as error:
+            attempt_status = "invalid-output"
             results.append(replace(fallback, reason=str(error)))
+        finally:
+            if started is not None and telemetry is not None:
+                telemetry.append({"id": email.id, "engine": engine, "status": attempt_status,
+                                  "duration_ms": round(max(0, time.monotonic() - started) * 1000, 3)})
     return results
 
 

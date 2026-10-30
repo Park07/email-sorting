@@ -23,7 +23,9 @@ The unit suite checks output restrictions, remote opt-in, free-account acknowled
 
 The evaluator reports TP/FP/FN, precision, recall and full-label exact matches. Missing denominators produce null. It reports local and hosted classifications separately and fingerprints fixtures, code and prompt. Its exit status is a transport/configuration result, not an accuracy gate. The bundled 24 cases are development examples, not an independently held-out benchmark. Some deliberately expose current keyword limitations.
 
-Remaining evaluation work includes measured model latency, model/version pinning, output correctness on independent cases, hardware memory under the intended context size and the operator's ability to recover without developer help. No live backend has been evaluated from this workspace.
+The evaluator now captures model-request timings, distinguishes complete from incomplete inference, and supports a hidden local key prompt. The comparison command checks matching fixture, prompt, classifier and evaluator fingerprints before presenting results. It withholds model scores when the run includes inference fallbacks. Hosted benchmark requests are paced without automatic retries.
+
+Remaining evaluation work includes real model latency measurements, model/version pinning, output correctness on independent cases, hardware memory under the intended context size and the operator's ability to recover without developer help. No live backend has been evaluated from this workspace.
 
 ## Before inbox integration
 
