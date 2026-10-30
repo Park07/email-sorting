@@ -1,0 +1,10 @@
+[
+  {"id":"demo-parent","subject":"NXI website enquiry: Workshop","body":"Would this workshop suit a ten-year-old who has never coded?"},
+  {"id":"demo-school","subject":"NXI website enquiry: School workshop","body":"Could you visit our class of 24 students?"},
+  {"id":"demo-bulk","subject":"NXI website enquiry: Products and school pricing","body":"Our school would like a bulk quote for SoraDrive controller boards."},
+  {"id":"demo-delivery","subject":"Order status","body":"Please confirm the delivery ETA for my sensor bar back-order."},
+  {"id":"demo-refund","subject":"One place needs cancelling","body":"Please cancel one child's workshop place and refund that place only."},
+  {"id":"demo-supplier","subject":"Supplier invoice","body":"Attached is the invoice for the components you purchased."},
+  {"id":"demo-spam","subject":"Investment opportunity","body":"Guaranteed returns from crypto. Deposit now to unlock your bonus."},
+  {"id":"demo-unclear","subject":"A quick question","body":"Can we discuss the thing from Tuesday?"}
+]

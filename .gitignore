@@ -1,0 +1,17 @@
+# Real emails, credentials and results belong only on the operator's machine.
+private/
+results/
+*.eml
+*.mbox
+*.jsonl
+*token*
+*credential*
+*.pem
+*.key
+.env
+.env.*
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+.pytest_cache/
